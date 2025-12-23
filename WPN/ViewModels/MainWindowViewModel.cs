@@ -28,6 +28,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private bool _isAlwaysOnTop;
     
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PreviewButtonText))]
     private bool _isPreviewMode;
     
     public string PreviewButtonText => IsPreviewMode ? "Edit" : "Preview";
@@ -96,7 +97,6 @@ public partial class MainWindowViewModel : ViewModelBase
     private void TogglePreview()
     {
         IsPreviewMode = !IsPreviewMode;
-        OnPropertyChanged(nameof(PreviewButtonText));
     }
     
     private void LoadNotes()

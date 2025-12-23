@@ -48,8 +48,8 @@ public class HyperlinkCommand : ICommand
             Uri? uri;
             if (!Uri.TryCreate(url, UriKind.Absolute, out uri))
             {
-                // Try relative URL - assume http:// if no scheme provided
-                if (!url.StartsWith("http://") && !url.StartsWith("https://") && !url.StartsWith("mailto:"))
+                // Try adding http:// scheme for URLs without a scheme
+                if (!url.Contains("://"))
                 {
                     url = "http://" + url;
                     if (!Uri.TryCreate(url, UriKind.Absolute, out uri))
@@ -57,13 +57,10 @@ public class HyperlinkCommand : ICommand
                 }
                 else
                 {
+                    // URL has a scheme but is malformed
                     return;
                 }
             }
-            
-            // Ensure uri is not null
-            if (uri == null)
-                return;
             
             // Only allow http, https, and mailto schemes
             if (uri.Scheme != "http" && uri.Scheme != "https" && uri.Scheme != "mailto")
