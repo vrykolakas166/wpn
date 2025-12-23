@@ -1,6 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:WPN.ViewModels"
+        xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="600"
@@ -35,6 +36,13 @@
                         Content="Delete"
                         Padding="12,6"
                         Background="#CC3333"
+                        Foreground="White"
+                        CornerRadius="4"
+                        IsEnabled="{Binding SelectedNote, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                <Button Command="{Binding TogglePreviewCommand}" 
+                        Content="{Binding PreviewButtonText}"
+                        Padding="12,6"
+                        Background="#4CAF50"
                         Foreground="White"
                         CornerRadius="4"
                         IsEnabled="{Binding SelectedNote, Converter={x:Static ObjectConverters.IsNotNull}}"/>
@@ -94,18 +102,31 @@
             
             <!-- Editor -->
             <Border Grid.Column="2" Background="White" Padding="20">
-                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                    <TextBox Text="{Binding NoteContent, Mode=TwoWay}"
-                             AcceptsReturn="True"
-                             TextWrapping="Wrap"
-                             BorderThickness="0"
-                             Background="Transparent"
-                             FontFamily="Consolas,Monaco,Courier New,monospace"
-                             FontSize="14"
-                             IsEnabled="{Binding SelectedNote, Converter={x:Static ObjectConverters.IsNotNull}}"
-                             Watermark="Select a note or create a new one..."
-                             MinHeight="400"/>
-                </ScrollViewer>
+                <Grid>
+                    <!-- Edit Mode -->
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" 
+                                  VerticalScrollBarVisibility="Auto"
+                                  IsVisible="{Binding !IsPreviewMode}">
+                        <TextBox Text="{Binding NoteContent, Mode=TwoWay}"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 BorderThickness="0"
+                                 Background="Transparent"
+                                 FontFamily="Consolas,Monaco,Courier New,monospace"
+                                 FontSize="14"
+                                 IsEnabled="{Binding SelectedNote, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                 Watermark="Select a note or create a new one..."
+                                 MinHeight="400"/>
+                    </ScrollViewer>
+                    
+                    <!-- Preview Mode -->
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" 
+                                  VerticalScrollBarVisibility="Auto"
+                                  IsVisible="{Binding IsPreviewMode}">
+                        <md:MarkdownScrollViewer Markdown="{Binding NoteContent}"
+                                                 x:Name="MarkdownViewer"/>
+                    </ScrollViewer>
+                </Grid>
             </Border>
         </Grid>
     </Grid>

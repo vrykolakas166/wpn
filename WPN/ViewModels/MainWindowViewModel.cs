@@ -27,6 +27,12 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isAlwaysOnTop;
     
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PreviewButtonText))]
+    private bool _isPreviewMode;
+    
+    public string PreviewButtonText => IsPreviewMode ? "Edit" : "Preview";
+    
     public MainWindowViewModel()
     {
         _noteService = new NoteService();
@@ -85,6 +91,12 @@ public partial class MainWindowViewModel : ViewModelBase
             Notes.Remove(SelectedNote);
             SelectedNote = Notes.FirstOrDefault();
         }
+    }
+    
+    [RelayCommand]
+    private void TogglePreview()
+    {
+        IsPreviewMode = !IsPreviewMode;
     }
     
     private void LoadNotes()
