@@ -43,7 +43,7 @@ public class NoteService
                 // Extract title from first line if it's a heading
                 var title = fileName;
                 var lines = content.Split('\n');
-                if (lines.Length > 0 && lines[0].StartsWith("# "))
+                if (lines.Length > 0 && lines[0].StartsWith("# ") && lines[0].Length > 2)
                 {
                     title = lines[0].Substring(2).Trim();
                 }

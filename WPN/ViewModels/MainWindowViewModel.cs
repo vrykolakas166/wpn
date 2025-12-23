@@ -41,7 +41,7 @@ public partial class MainWindowViewModel : ViewModelBase
             
             // Update title from first line if it's a heading
             var lines = value.Split('\n');
-            if (lines.Length > 0 && lines[0].StartsWith("# "))
+            if (lines.Length > 0 && lines[0].StartsWith("# ") && lines[0].Length > 2)
             {
                 var newTitle = lines[0].Substring(2).Trim();
                 if (!string.IsNullOrWhiteSpace(newTitle))
@@ -105,14 +105,15 @@ public partial class MainWindowViewModel : ViewModelBase
         _autoSaveCts = new CancellationTokenSource();
         
         var token = _autoSaveCts.Token;
+        var noteToSave = SelectedNote;
         
         // Wait 1 second before saving
         Task.Delay(1000, token).ContinueWith(t =>
         {
-            if (!t.IsCanceled && SelectedNote != null)
+            if (!t.IsCanceled && noteToSave != null)
             {
-                _noteService.SaveNote(SelectedNote);
+                _noteService.SaveNote(noteToSave);
             }
-        }, token);
+        }, token, TaskContinuationOptions.None, TaskScheduler.Default);
     }
 }
